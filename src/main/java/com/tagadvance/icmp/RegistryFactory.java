@@ -11,25 +11,25 @@ import jakarta.xml.bind.JAXBException;
  */
 public class RegistryFactory {
 
-  private static final Registry registry = createRegistry();
+  private static final Registry registry;
 
-  private RegistryFactory() {
-  }
-
-  public static final Registry getRegistry() {
-    return registry;
-  }
-
-  private static Registry createRegistry() {
+  static {
     final var name = "/icmp-parameters.xml";
     try (final var in = RegistryFactory.class.getResourceAsStream(name)) {
       JAXBContext jContext =
           JAXBContext.newInstance(Registry.class, Xref.class);
       final var unmarshaller = jContext.createUnmarshaller();
-      return (Registry) unmarshaller.unmarshal(in);
+      registry = (Registry) unmarshaller.unmarshal(in);
     } catch (IOException | JAXBException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  private RegistryFactory() {
+  }
+
+  public static Registry getRegistry() {
+    return registry;
   }
 
 }
